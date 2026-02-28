@@ -1,0 +1,17 @@
+- hosts: prodserver
+  become: yes
+  tasks:
+    - name: Pull latest Docker image
+      docker_image:
+        name: <your-registry>/php-app
+        tag: latest
+        source: pull
+
+    - name: Run container
+      docker_container:
+        name: php-app
+        image: <your-registry>/php-app:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "80:80"

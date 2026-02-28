@@ -1,0 +1,20 @@
+- hosts: localhost
+  tasks:
+    - name: Launch EC2 instance
+      amazon.aws.ec2_instance:
+        key_name: my-key
+        instance_type: t2.micro
+        image_id: ami-xxxxxxxx
+        wait: yes
+        count: 1
+        region: us-east-1
+        security_groups: ['my-sg']
+        tags:
+          Name: TestServer
+      register: ec2
+
+    - name: Add new instance to inventory
+      add_host:
+        name: "{{ item.public_ip_address }}"
+        groups: testserver
+      loop: "{{ ec2.instances }}"

@@ -1,0 +1,23 @@
+- hosts: testserver
+  become: yes
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Pull latest Docker image
+      docker_image:
+        name: <your-registry>/php-app
+        tag: latest
+        source: pull
+
+    - name: Run container
+      docker_container:
+        name: php-app
+        image: <your-registry>/php-app:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "80:80"
